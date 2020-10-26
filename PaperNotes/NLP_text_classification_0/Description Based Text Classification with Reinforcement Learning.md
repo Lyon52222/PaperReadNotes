@@ -144,8 +144,10 @@
       | Electronics | System Performance, Appearance, Battery, Computing (e.g., cpu, gpu, tpu etc.), Certified Products, Quality, IO (e.g., keyboard,screen, etc.), Price, Storage, Function (e.g., touch id, waterproof etc.) |
       - 首先更具相似性准则为每个方面项标注方面类别（类别从预定义好的表中选择）
 - **Reinforced Aspect-relevant Word Selector：**
+  
   ![avatar](./images/RAWS.jpg)
   
   RAWS实际上是一个“强”注意力机制，因为[Xuet al. (2015)](http://proceedings.mlr.press/v37/xuc15.pdf) 和 [Shen et al. (2018b)](https://arxiv.org/pdf/1801.10296.pdf)中提出的非可区分问题，所以无法通过反向传播进行优化。所以作者采用强化学习和policy gradient来进行优化。
 - **Reinforced Bidirectional Attention Network：** 
+  
   ![avatar](./images/RBAN.jpg)
