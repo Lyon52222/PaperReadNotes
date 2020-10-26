@@ -67,7 +67,7 @@
 
 # Integrating Semantic Knowledge to Tackle Zero-shot Text Classification
 
-##### 发布时间：29 Mar 2019
+##### 发布时间：29 Mar 2019   CODE: https://github.com/JingqingZ/KG4ZeroShotText
 
 ---
 
@@ -125,4 +125,27 @@
    -  不像传统的非交互式评论是一个序列结构，问答风格的数据包含两个部分，问题和答案。
    -  和传统的QA问题不同，ASC-QA的目标是从一个特殊的方面抽取语义信息，这可能会受到很多与该方面无关的噪声信息影响。 在上面表格中，对于耐用性，quite和obtuse就是噪声。
 - **结论：** 一个好的ASC-QA方法应该尽量缓解模型训练过程中噪声词对于问题和答案的影响。
-- **解决方法：** 使用强化双向注意力网络来缓解上面两个问题。 首先作者提出了一个单词选择模型，叫做强化方面相关单词选择器（RAWS,Reinforced Aspect-relevant Word Selector),通过丢弃噪声词，只从单词序列中选择方面相关的单词来缓解噪声词的影响。在RAWS的基础上，作责又提出了强化双向注意力网络（RBAN,Reinforced Bidirectional Attention Network),它使用了两部分RAWS模块去分别调整问题和答案中的单词选择。 通过这种方式，RBAN不仅可以从QA文本中选择出语义匹配问题，还可以同时缓解问题和答案中的噪声词的影响。 最后作者使用了强化学习算法和policy gradient来调整RBAN。
+- **解决方法：** 使用强化双向注意力网络来缓解上面两个问题。 
+  - 首先作者提出了一个单词选择模型，叫做强化方面相关单词选择器（RAWS,Reinforced Aspect-relevant Word Selector),通过丢弃噪声词，只从单词序列中选择方面相关的单词来缓解噪声词的影响。
+  - 在RAWS的基础上，作者又提出了强化双向注意力网络（RBAN,Reinforced Bidirectional Attention Network),它使用了两部分RAWS模块去分别调整问题和答案中的单词选择。 通过这种方式，RBAN不仅可以从QA文本中选择出语义匹配问题，还可以同时缓解问题和答案中的噪声词的影响。 
+  - 最后作者使用了强化学习算法和policy gradient来调整RBAN。
+-  **数据准备：** 作者对方面进行了两种粒度的定义:aspect term 和 aspect category。作者还定义了三种情感:positive, negative 和 neutral。 这样每个QA文本对都被标记成了两组。(Aspect term, Polarity) 和 (Aspect category, Polarity)
+   -  (Aspect term, Polarity): 根据下面四个准则来判断是否对方面项进行标注。
+      -  只有当问题和回答相匹配时才对方面项进行标注。例如对于表中数据，只标注(battery life, positive),(opterating speed, negative)
+      -  只有当方面项被表达的时候才进行标注。 例如：**Q:** How is this phone? How about the case? **A:** I bought this phone yesterday. Case is
+      okay nothing great.   这里只会标注(case, nuetral)
+      - 只有当方面项被直接指明时才会进行标注。 例如：**Q:** Is this expensive? Did anybody buy one? **A:** Of course, it’s quite expensive.  this，it这样的不会进行标注。
+      - 当方面项在问题和答案中有两种不同的描述时应和问题中一致。 例如：**Q:** Is battery life durable? **A:** Yes, this battery is very durable. 这里的标注应该为(battery life,durable)
+    - (Aspect Category, Polarity)： 首先像下表一样对每个领域定义一些分类。
+      | Domains | Aspect Categories |
+      | -- | -------- |
+      | Bags | Size, Price, Appearance, Quality, Weight, Certified Products, Smell, Accessories, Material, Life Timer, Style, Workmanship, Color, Stain Resistant, Practicality |
+      | Cosmetics | Price, Efficacy, Moisturizing Performance, Certified Products, Adverse Reaction, Exfoliator, Texture, Long Lasting, Smell, Material, Noticeable Color, Quality, Colour, Touch, Skin Whitening, Acne |
+      | Electronics | System Performance, Appearance, Battery, Computing (e.g., cpu, gpu, tpu etc.), Certified Products, Quality, IO (e.g., keyboard,screen, etc.), Price, Storage, Function (e.g., touch id, waterproof etc.) |
+      - 首先更具相似性准则为每个方面项标注方面类别（类别从预定义好的表中选择）
+- **Reinforced Aspect-relevant Word Selector：**
+  ![avatar](./images/RAWS.jpg)
+  
+  RAWS实际上是一个“强”注意力机制，因为[Xuet al. (2015)](http://proceedings.mlr.press/v37/xuc15.pdf) 和 [Shen et al. (2018b)](https://arxiv.org/pdf/1801.10296.pdf)中提出的非可区分问题，所以无法通过反向传播进行优化。所以作者采用强化学习和policy gradient来进行优化。
+- **Reinforced Bidirectional Attention Network：** 
+  ![avatar](./images/RBAN.jpg)
