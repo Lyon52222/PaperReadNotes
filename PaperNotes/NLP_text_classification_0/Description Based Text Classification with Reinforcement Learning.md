@@ -19,8 +19,10 @@
 - **补充：** 将NLP问题看成QA问题来处理。
   
 - **三种生成描述的策略：** 
+  使用强化学习来让模型达到更好的表现。强化学习有三个要素：Action $a$, Policy $π$, Reward $R$.
   - *模板：* 最直接生成标签描述的就是人工模板，模板的来源有很多，比如Wikipedia或者人工标注。
   - *截取：* 
+    - 从$x$中抽取字串$q_{yx}$作为标签$y$的描述信息。当$x$中没有对应的字串可以选择时就从人工模板中选择作为描述。
   - *抽象：*
 
 - **使用的数据集：**
@@ -109,3 +111,18 @@
     零样本分类，NLP中的数据增强，NLP中的特征增强，联结和特征工作。
 
 
+# Aspect Sentiment Classification Towards Question-Answering with Reinforced Bidirectional Attention Network
+
+##### 发布时间：25 Sep 2017
+---
+
+- **问题：** 现有的方面及情感分类（ASC,Aspect sentiment classification)都是专注于非交互式评论。最近几年在各大论坛和电商平台都出现了交互式的评论，所以作者提出了一种新的研究任务（ASC-QA,Aspect sentiment classification towards Quetion-Answering)
+    | Questin-Answering Style Review |Aspect Sentiment Classification Towards QA|
+    | --- | --- |
+    | **Question:**  Is [battery life] durable? How about [operating speed] of the phone? | **Input:**  QA text pair with given aspects|  
+    | **Answer:**  Yes, very <font color=green>durable</font> but <font color=red>quite</font> slow and <font color=red>obtuse</font>. |**Output:**  [battery life]: Positive [operating speed]: Negative|
+-  **困难：** 
+   -  不像传统的非交互式评论是一个序列结构，问答风格的数据包含两个部分，问题和答案。
+   -  和传统的QA问题不同，ASC-QA的目标是从一个特殊的方面抽取语义信息，这可能会受到很多与该方面无关的噪声信息影响。 在上面表格中，对于耐用性，quite和obtuse就是噪声。
+- **结论：** 一个好的ASC-QA方法应该尽量缓解模型训练过程中噪声词对于问题和答案的影响。
+- **解决方法：** 使用强化双向注意力网络来缓解上面两个问题。 首先作者提出了一个单词选择模型，叫做强化方面相关单词选择器（RAWS,Reinforced Aspect-relevant Word Selector),通过丢弃噪声词，只从单词序列中选择方面相关的单词来缓解噪声词的影响。在RAWS的基础上，作责又提出了强化双向注意力网络（RBAN,Reinforced Bidirectional Attention Network),它使用了两部分RAWS模块去分别调整问题和答案中的单词选择。 通过这种方式，RBAN不仅可以从QA文本中选择出语义匹配问题，还可以同时缓解问题和答案中的噪声词的影响。 最后作者使用了强化学习算法和policy gradient来调整RBAN。
